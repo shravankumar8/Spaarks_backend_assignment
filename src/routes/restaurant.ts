@@ -1,6 +1,7 @@
 import express from "express";
 import { Restaurant } from "../database/dbconnect";
 import { DeletedRestaurants } from "../database/dbconnect";
+import restaurantsNearby from './restaurantsFind'
 export const router = express.Router();
 import { date, z } from "zod";
 
@@ -112,7 +113,24 @@ router.get("/:id", async (req, res) => {
     res.json({ message: "restaurant not found" });
     return;
   }
-  res.json({ message: "data Fetched succesfully", restaurantData });
+  let gradeScore:any[]=[]
+  restaurantData.grades.map((item=>{
+gradeScore.push(item.score);
+  }))    
+  console.log("highest raring",)
+
+  let resObj = {
+    name: restaurantData.name,
+    address: restaurantData.address,
+    borough: restaurantData.address,
+    cuisine: restaurantData.cuisine,
+    highestRating: Math.max(...gradeScore),
+    lowestRating: Math.min(...gradeScore),
+    averageRating : gradeScore.reduce((a, b) => a + b, 0) / gradeScore.length
+
+
+  };
+  res.json({ message: "data Fetched succesfully", restaurantData: resObj });
 });
 
 router.delete("/:id", async (req, res) => {
