@@ -27,6 +27,16 @@ Before setting up the project, ensure you have the following installed on your s
 
 ## Setup Instructions
 
+### first lets do easy setup with docker
+
+run
+
+```bash
+ docker build -t spaarks_backend_assignment .
+docker run -d -p  3000:3000 spaarks_backend_assignment
+
+```
+
 ### 1. Clone the Repository
 
 ```bash
@@ -34,11 +44,24 @@ git clone https://github.com/yourusername/Spaarks_backend_assignment.git
 cd Spaarks_backend_assignment
 ```
 
-
 ### 1. Install Dependencies
+
 Install the necessary Node.js dependencies using npm:
+
 ```bash
 npm install
 ```
+
 ### 3. Set Environment Variables
-Create a .env file in the root directory and add your environment variables. For example:
+
+Create a .env file in the root directory and add your environment variables.
+
+### 4. Run the Development Server:
+
+```bash
+npm run dev
+```
+
+# Usage
+
+Once the application is running, you can use Postman or any HTTP client to interact with the API endpoints for CRUD operations on restaurant records.
