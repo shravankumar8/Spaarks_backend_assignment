@@ -5,13 +5,24 @@ import restaurantsRouter from "./routes/restaurant";
 import restaurantsFind from "./routes/restaurantsFind";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-
+import { userAuth } from "./middlewares";
+import jwt from "jsonwebtoken";
 dotenv.config();
 app.use(express.json());
 app.use("/restaurants/find", restaurantsFind);
-app.use("/restaurants", restaurantsRouter);
+app.use("/restaurants", userAuth, restaurantsRouter);
 
-
+app.get("/genToken",(req,res)=>{
+  const {userId,email}=req.body
+  try {
+    const token = jwt.sign({ userId, email }, "secret");
+    res.json({"message":"token generated succesfully",token})
+    console.log(token);
+    
+  } catch (error) {
+    console.log("errpr",error)
+  }
+})
 
 const dbUrl = process.env.DB_URL;
 
