@@ -6,12 +6,18 @@ import dotenv from "dotenv";
 import { userAuth } from "./middlewares";
 import { genToken } from "./controllers/genToken";
 import swaggerDocument from "./docs/swagger.json";
-dotenv.config();
-import  { Response as ExResponse, Request as ExRequest } from "express";
+import  { Response , Request  } from "express";
 import swaggerUi from "swagger-ui-express";
-const port = 3000;
+
+// setting up the env file
+dotenv.config();
+
+// creating an app instance
 const app = express();
 const dbUrl = process.env.DB_URL;
+
+
+// configure the app to use body parser 
 app.use(express.json());
 //router 
 
@@ -35,6 +41,16 @@ mongoose.connect(dbUrl).then(() => {
     process.exit(1); 
   });
 
-app.listen(port, () => {
+  // irrelevant route
+app.get("/*",(req:Request,res:Response)=>{
+  try {
+    res.status(404).json({message:"the route you requested does not exist"})
+  } catch (error) {
+    console.log(`error in GET /* route : ${error}`)
+      res.status(401).json({message:"internal server error"})
+  }
+})
+  // listening for requests
+app.listen(process.env.port ||3000, () => {
   console.log("app listening on http://localhost:3000");
 });

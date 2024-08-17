@@ -1,4 +1,5 @@
-import { Restaurant } from "../database/dbconnect";
+import { z } from "zod";
+import { Restaurant } from "../database/dbschema";
 import { objectFormatter } from "../utils/functions";
 import { locationSchema } from "../utils/schema";
 
@@ -10,10 +11,10 @@ export const between =async (req:any, res:any) => {
   //    using the `filter` and `some` functions, which gives us the records
   //    that fall within the desired range (between minRadius and maxRadius).
 
-  const data = locationSchema.parse(req.body);
-
-  const { latitude, longitude, minimumDistance, maximumDistance } = data;
+  
   try {
+    const data = locationSchema.parse(req.body);
+    const { latitude, longitude, minimumDistance, maximumDistance } = data;
     const maxRadiusData = await Restaurant.find(
       {
         "address.coord": {
@@ -34,9 +35,9 @@ export const between =async (req:any, res:any) => {
           $nearSphere: {
             $geometry: {
               type: "Point",
-              coordinates: [longitude, latitude], // Longitude first, then Latitude
+              coordinates: [longitude, latitude],
             },
-            $maxDistance: minimumDistance, // 5 miles in meters
+            $maxDistance: minimumDistance,
           },
         },
       },
@@ -63,8 +64,18 @@ export const between =async (req:any, res:any) => {
       restaurantData: processedRecords,
     });
   } catch (error: any) {
-    console.log("error", error);
+    if (error instanceof z.ZodError) {
+      // Return validation errors
+      return res.status(400).json({
+        message: "Input validation error",
+        errors: error.errors, // Provide detailed validation errors
+      });
+    }
 
-    res.status(500).json({ message: "internal server error" });
+    console.error(`Error in getNearby method: ${error}`);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 }

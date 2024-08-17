@@ -1,4 +1,4 @@
-import { Restaurant } from "../database/dbconnect";
+import { Restaurant } from "../database/dbschema";
 import { partialRestaurantSchema } from "../utils/schema";
 
 export const updateRestaurant= async (req:any, res:any) => {
@@ -39,7 +39,12 @@ export const updateRestaurant= async (req:any, res:any) => {
       message: "No changes made to the restaurant",
     });
   } catch (error) {
-    res.status(505).json({ message: "internal server error" });
-    console.log(error);
+    console.error(`Error in UpdateRestaurant method: ${error}`);
+    // throw error; // Propagate the error to be handled in the route
+    return {
+      status: 500,
+      success: false,
+      message: "internal server error",
+    };
   }
 }

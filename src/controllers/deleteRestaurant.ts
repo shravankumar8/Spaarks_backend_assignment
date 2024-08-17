@@ -1,5 +1,5 @@
-import { Restaurant } from "../database/dbconnect";
-import { DeletedRestaurants } from "../database/dbconnect";
+import { Restaurant } from "../database/dbschema";
+import { DeletedRestaurants } from "../database/dbschema";
 
 export const deleteRestaurant =async (req:any, res:any) => {
   const id = req.params.id;

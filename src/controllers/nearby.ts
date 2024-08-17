@@ -1,13 +1,15 @@
 import { locationSchema } from "../utils/schema";
-import { Restaurant } from "../database/dbconnect";
+import { Restaurant } from "../database/dbschema";
 import { objectFormatter } from "../utils/functions";
-
-export const nearby = async (req:any, res:any) => {
-  const data = locationSchema.parse(req.body);
-  const { latitude, longitude, radius } = data;
-  // Validate request body
+import { Request, Response } from "express";
+import { z } from "zod";
+export const nearby = async (req:Request, res:Response) => {
   try {
-    // fetching using geospatial queries
+    // Validate request body with Zod schema
+    const data = locationSchema.parse(req.body);
+
+    const { latitude, longitude, radius } = data;
+    // Fetching using geospatial queries
     const results = await Restaurant.find(
       {
         "address.coord": {
@@ -22,10 +24,10 @@ export const nearby = async (req:any, res:any) => {
       },
       { _id: 0, restaurant_id: 0 }
     );
-    // responses to user if no data is found
+    // response incase where no restaurants are found
     if (results.length < 1) {
-      res.json({
-        message: "reataurants not found",
+      return res.json({
+        message: "Restaurants not in the given location",
         restaurantData: results,
       });
     }
@@ -33,10 +35,22 @@ export const nearby = async (req:any, res:any) => {
     const processedRecords = objectFormatter(results);
 
     res.json({
-      message: "lost of restauran",
+      message: "Succesfuly Fetched the restaurants in the given location",
       restaurantData: processedRecords,
     });
-  } catch (err) {
-    console.error("Error performing geospatial query:", err);
+  } catch (error:any) {
+    if (error instanceof z.ZodError) {
+      // Return validation errors
+      return res.status(400).json({
+        message: "Input validation error",
+        errors: error.errors, // Provide detailed validation errors
+      });
+    }
+
+    console.error(`Error in getNearby method: ${error}`);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };

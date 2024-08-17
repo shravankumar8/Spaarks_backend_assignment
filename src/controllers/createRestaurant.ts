@@ -1,4 +1,4 @@
-import { Restaurant } from "../database/dbconnect";
+import { Restaurant } from "../database/dbschema";
 import { restaurantSchema } from "../utils/schema";
 
 export const createRestaurant = async (req: any, res: any) => {
