@@ -5,15 +5,23 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { userAuth } from "./middlewares";
 import { genToken } from "./controllers/genToken";
+import swaggerDocument from "./docs/swagger.json";
+dotenv.config();
+import  { Response as ExResponse, Request as ExRequest } from "express";
+import swaggerUi from "swagger-ui-express";
 const port = 3000;
 const app = express();
 const dbUrl = process.env.DB_URL;
-dotenv.config();
 app.use(express.json());
 //router 
+
+
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/restaurants/find", restaurantsFind);
 app.use("/restaurants", userAuth, restaurantsRouter);
 app.get("/genToken",genToken)
+
 
 if (!dbUrl) {
   throw new Error("DB_URL environment variable is not defined");

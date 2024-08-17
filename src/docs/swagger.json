@@ -1,0 +1,205 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Spaarks_backend_assignment",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "tags": [
+    {
+      "name": "geospactial queries"
+    },
+    {
+      "name": "generate authirised user"
+    }
+  ],
+  "paths": {
+    "/restaurants/find/nearby": {
+      "get": {
+        "tags": ["geospactial queries"],
+        "summary": "restaurants nearby",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/restaurants/find/between": {
+      "get": {
+        "tags": ["geospactial queries"],
+        "summary": "restaurants in a range",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/genToken": {
+      "get": {
+        "tags": ["generate authirised user"],
+        "summary": "generate Auth user",
+        "description": "### Generate Token\n\nThis endpoint triggers an HTTP GET request to generate a token for a user.\n\n#### Request Body\n\n- `userId` (text, ): The user ID for which the token needs to be generated make sure its admin for admin privileges.\n    \n- `email` (text): The email of the user for which the token needs to be generated.\n    \n\n#### Response\n\n- Status: 200 OK\n- Content-Type: application/json\n- `message` (string): A message related to the token generation process.\n- `token` (string): The generated token.",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/restaurants": {
+      "post": {
+        "tags": ["default"],
+        "summary": "create a restaurant",
+        "description": "### POST /restaurants\n\nThis endpoint is used to create a new restaurant entry.\n\n#### Request Body\n\n- `name` (string, required): The name of the restaurant.\n- `cuisine` (string, required): The type of cuisine offered by the restaurant.\n- `borough` (string, required): The borough where the restaurant is located.\n- `description` (string, required): A brief description of the restaurant.\n- `address` (object, required): The address details of the restaurant.\n    - `building` (string, required): The building number of the restaurant's address.\n    - `coord` (array, required): The coordinates of the restaurant's address.\n    - `street` (string, required): The street name of the restaurant's address.\n    - `zipcode` (string, required): The zipcode of the restaurant's address.\n- `grades` (array, required): An array of grading details for the restaurant.\n    - `date` (string, required): The date of the grading.\n    - `grade` (string, required): The grade received by the restaurant.\n    - `score` (number, required): The score received by the restaurant.\n\n#### Response (200 - OK)\n\nThe response is in JSON format and follows the schema below:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"message\": {\n      \"type\": \"string\"\n    },\n    \"data\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"description\": {\n          \"type\": \"string\"\n        },\n        \"address\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"building\": {\n              \"type\": \"string\"\n            },\n            \"coord\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"number\"\n              }\n            },\n            \"street\": {\n              \"type\": \"string\"\n            },\n            \"zipcode\": {\n              \"type\": \"string\"\n            }\n          }\n        },\n        \"name\": {\n          \"type\": \"string\"\n        },\n        \"grades\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"date\": {\n                \"type\": \"string\"\n              },\n              \"grade\": {\n                \"type\": \"string\"\n              },\n              \"score\": {\n                \"type\": \"number\"\n              }\n            }\n          }\n        },\n        \"cuisine\": {\n          \"type\": \"string\"\n        },\n        \"borough\": {\n          \"type\": \"string\"\n        }\n      }\n    },\n    \"id\": {\n      \"type\": \"string\"\n    }\n  }\n}\n\n ```",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "antera",
+                  "cuisine": "pub fast food",
+                  "borough": "madhapur",
+                  "description": "Here is a small description of a restaurant Taste Buds Cafe Indulge in a culinary journey at Taste Buds Cafe, where flavors blend and memories are made. Our cozy restaurant serves up delicious fusion cuisine, crafted with fresh ingredients and love",
+                  "address": {
+                    "building": "227",
+                    "coord": [-78.41417004963958, 17.43448246411086],
+                    "street": "madhapur ",
+                    "zipcode": "500033"
+                  },
+                  "grades": [
+                    {
+                      "date": "2014-10-06T00:00:00.000+00:00",
+                      "grade": "A",
+                      "score": 3
+                    },
+                    {
+                      "date": "2014-10-06T00:00:00.000+00:00",
+                      "grade": "A",
+                      "score": 5
+                    },
+                    {
+                      "date": "2014-10-06T00:00:00.000+00:00",
+                      "grade": "A",
+                      "score": 7
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhZG1pbiIsImVtYWlsIjoia3VtYXNocmF2YW41QGdtYWlsLmNvbSIsImlhdCI6MTcyMzgxOTE4OX0.jT5c1jJhRX2nFv1NbmqAuvtLA7X0-sMg2n9YkSCb1jw"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/restaurants/1544466807": {
+      "put": {
+        "tags": ["default"],
+        "summary": "update  restaurants data",
+        "description": "# Update Restaurant Details\n\nThis endpoint is used to update the details of a specific restaurant.\n\n## Request\n\n- Method: PUT\n- URL: `http://localhost:3000/restaurants/288217565`\n    \n\n### Request Body\n\n- Type: JSON\n- Description: The request should include a JSON object with the updated details of the restaurant.\n    \n\nExample:\n\n``` json\n{\n  \"name\": \"\"\n}\n## Response\nThe response for this request is a JSON object representing the updated details of the restaurant. Below is the JSON schema for the response:\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"location\": {\n      \"type\": \"string\"\n    },\n    \"cuisine\": {\n      \"type\": \"string\"\n    },\n    \"rating\": {\n      \"type\": \"number\"\n    }\n    // Additional properties based on the updated restaurant details\n  }\n}\n\n ```",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "shravan"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhZG1pbiIsImVtYWlsIjoia3VtYXNocmF2YW41QGdtYWlsLmNvbSIsImlhdCI6MTcyMzgyMDMyMX0.rKpRYhLJ9WzvsaFO1Xw-9orfkx6HpCfyM3jUoofgUp8"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/restaurants/40356442": {
+      "get": {
+        "tags": ["default"],
+        "summary": "get restaurant data",
+        "description": "\n### Get Restaurant Details\n\nThis endpoint retrieves details of a specific restaurant.\n\n#### Request\n\n- Method: GET\n- URL: `http://localhost:3000/restaurants/40356442`\n- Headers: None\n- Body:\n  - name (text, optional): The name of the restaurant.\n\n#### Response\nThe response for this request is a JSON object with the following schema:\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"restaurantId\": {\n      \"type\": \"string\"\n    },\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"location\": {\n      \"type\": \"string\"\n    },\n    \"cuisine\": {\n      \"type\": \"string\"\n    },\n    \"rating\": {\n      \"type\": \"number\"\n    }\n  }\n}\n```\n",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhZG1pbiIsImVtYWlsIjoia3VtYXNocmF2YW41QGdtYWlsLmNvbSIsImlhdCI6MTcyMzgyMDMyMX0.rKpRYhLJ9WzvsaFO1Xw-9orfkx6HpCfyM3jUoofgUp8"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/restaurants/1244894403": {
+      "delete": {
+        "tags": ["default"],
+        "summary": "delete restaurant",
+        "description": "\n### Delete Restaurant\nThis endpoint is used to delete a specific restaurant.\n\n#### Request Body\nThis request does not require a request body.\n\n#### Response\nThe response will not contain a response body. The status code will indicate the success or failure of the deletion operation.\n",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}
