@@ -27,6 +27,9 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/restaurants/find", restaurantsFind);
 app.use("/restaurants", userAuth, restaurantsRouter);
 app.get("/genToken",genToken)
+app.get("/health",(req:Request,res:Response)=>{
+  res.json({message:"server is running succesfully"})
+})
 
 
 if (!dbUrl) {
